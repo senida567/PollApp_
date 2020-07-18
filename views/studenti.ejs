@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-size: 62.5%;
+            font-family: Georgia, serif;
+            background:#233743;
+        }
+        label, li {
+            display: block;
+            padding: 5px;
+            font-size: 1.4em;
+            color: #e3f1fa;
+        }
+        fieldset {
+            margin: 115px auto;
+            width: 400px;
+            padding: 8px 15px 15px 15px;
+            border: 1px solid white;
+            display: block; /* IE 7 Requires This */
+        }
+        legend {
+            padding: 4px 6px 4px 6px;
+            border: 1px solid white;
+            font-size: 2.0em;
+            color: #e3f1fa;
+            font-style: italic;
+        }
+
+        .odg {
+            color:navajowhite;
+            font-size: 20px;
+        }
+
+        table {
+            color: #333;
+            font-family: Helvetica, Arial, sans-serif;
+            width: 640px;
+            border-collapse:
+                    collapse; border-spacing: 0;
+            border: 2px solid black;
+        }
+
+        td, th {
+            /*border: 1px solid transparent;/* No more visible border */
+            height: 30px;
+            transition: all 0.3s;  /* Simple transition for hover effect */
+        }
+
+        th {
+            background: #DFDFDF;  /* Darken header a bit */
+            font-weight: bold;
+            border-left: 2px solid black;
+        }
+
+        td {
+            background: #FAFAFA;
+            text-align: center;
+            border-left: 2px solid black;
+        }
+
+        tr{
+            border-bottom: 2px solid black;
+        }
+
+        /* Cells in even rows (2,4,6...) are one color */
+        tr:nth-child(even) td { background: #F1F1F1; }
+
+        /* Cells in odd rows (1,3,5...) are another (excludes header cells)  */
+        tr:nth-child(odd) td { background: #FEFEFE; }
+
+        tr td:hover { background: #666; color: #FFF; }
+        /* Hover cell effect! */
+    </style>
+</head>
+<body onload="f()">
+    <%if(objekti[0].anketa == false){%>
+        <h1 style="color:navajowhite"> Anketa još nije aktivna! </h1> </br>
+    <%}else{%>
+
+        <h1 style="color:navajowhite"><%= objekti[0].naziv %></h1> </br>
+
+        <%if(i < objekti.length){ %>
+
+                <table>
+                    <th>Pitanje</th>
+                    <th>Odgovor</th>
+                    <%for(var j = 0; j <= i; j++){%>
+                        <% if(objekti[j].odgovor != null) {%>
+                            <tr>
+                                <td> <%= objekti[j].pitanje %> </td>
+                                <td> <%= objekti[j].odgovor %> </td>
+                            </tr>
+                        <%}%>
+                    <%}%>
+                </table>
+
+            <fieldset>
+                <%if(objekti[i].odgovor === null){%>
+                            <legend><%= objekti[i].pitanje %> </legend>
+                             <form class="odg" action="/odgovor/<%=objekti[i].id_pitanja%>" method="POST">
+                                 <input type="text" name="index" value="<%=index%>" hidden>
+                                 <input type="text" name="pitanje" value="<%=i%>" hidden>
+                                 <input type="text" name="sifra" value="<%=sifra%>" hidden>
+                            <%if(objekti[i].tip_pitanja == 1){%>
+                                    <input type="radio" name="odgovor" value="da"> DA </br></br>
+                                    <input type="radio" name="odgovor" value="ne"> NE </br></br>
+                                    <input type="submit">
+                            <%}else if(objekti[i].tip_pitanja == 3){%>
+                                    <input type="text" name="odgovor"> </br></br>
+                                    <input type="submit">
+                            <%}else{%>
+                                    <input type="text" name="odgovor"> </br></br>
+                                     <input type="submit">
+                             <%}%>
+                             </form>
+                    <%}else{%>
+                        <h2 style="color:navajowhite">Odgovorili ste na ovo pitanje</h2>
+                    <%}%>
+            </fieldset>
+        <%}else{%>
+            <h2 style="color:navajowhite">Rezultati?</h2>
+                <form method="post" action="/rezultati/<%=sifra%>/<%=index%>">
+                    <input type="submit">
+                </form>
+
+        <h2 style="color:navajowhite">Pitanja studenata?</h2>
+            <form method="get" action="/pitanja_studenata">
+                <input type="text" name="index" value="<%=index%>" hidden>
+                <input type="text" name="sifra" value="<%=sifra%>" hidden>
+                <input type="submit">
+            </form>
+        <%}%>
+
+
+
+    <%}%>
+
+    <script>
+        function f(){
+        setTimeout(function () {
+            window.location.replace("http://localhost:3000/<%= index %>/<%= sifra %>/" +<%= ++i %>);
+        }, 10 * 1000)};
+
+    </script>
+
+</body>
+
+</html>
